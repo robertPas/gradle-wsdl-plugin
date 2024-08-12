@@ -5,6 +5,7 @@ import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.bundling.War
@@ -36,14 +37,14 @@ class WsdlWar extends War {
    * Root folder location for the Wsdl files in the file system.
    * @see org.gradle.jacobo.plugins.extension.WsdlPluginExtension#wsdlFolder
    */
-  @Input
+  @InputDirectory
   File wsdlFolder
 
   /**
    * Root folder location for the schema(xsd) files in the file system.
    * @see org.gradle.jacobo.plugins.extension.WsdlPluginExtension#schemaFolder
    */
-  @Input
+  @InputDirectory
   File schemaFolder
 
   /**

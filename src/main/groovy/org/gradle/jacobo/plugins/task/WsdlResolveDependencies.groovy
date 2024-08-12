@@ -4,6 +4,9 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.OutputDirectory
 
 import org.gradle.jacobo.plugins.resolver.DependencyResolver
 
@@ -16,11 +19,13 @@ class WsdlResolveDependencies extends DefaultTask {
   /**
    * Absolute path WSDL file.
    */
+  @InputFile
   File wsdlFile
 
   /**
    * Resolves all the WSDL's dependencies.
    */
+  @Internal
   DependencyResolver dependencyResolver
 
   /**
