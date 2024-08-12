@@ -1,30 +1,64 @@
 buildscript{ 
-  apply from: 'buildscript.gradle'
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+//    classpath "net.saliman:gradle-cobertura-plugin:1.1.2"
+//    classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6'
+  }
 }
 
-apply from: 'publishing.gradle'
-apply plugin: 'groovy'
-apply from: 'cobertura.gradle'
-apply from: 'integTest.gradle'
+plugins {
+	id 'eclipse'
+	id 'groovy'
+	id 'java-gradle-plugin'
+	id 'maven-publish'
+}
+//apply plugin: 'at.comm_unity.maven-publish-conventions'
 
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+println "Running Gradle ${gradle.gradleVersion} for ${project.name} with Java " + System.getProperty("java.version") + " (" + System.getProperty("java.home") + ")" 
+
+group = 'at.comm_unity.com.github.jacobono'
+
+java {
+    toolchain {
+		languageVersion = JavaLanguageVersion.of(8)
+    }
+	withSourcesJar()
+}	
 
 repositories {
-  mavenCentral()
-  jcenter()
+	mavenCentral()
+	maven {
+		url "https://repo.comm-unity.at/nexus/content/groups/public"
+		content { includeGroupByRegex "at\\.comm_unity.*" }
+	}
 }
 
-group = 'com.github.jacobono'
+sourceSets {
+  integTest {
+     compileClasspath += main.output + test.output
+     runtimeClasspath += main.output + test.output
+    groovy {
+      srcDir 'src/integTest/groovy'
+    }
+  }
+}
+
+configurations { 
+  integTestCompile.extendsFrom testCompile
+  integTestRuntime.extendsFrom testRuntime
+}
 
 dependencies {
-  compile gradleApi()
-  compile localGroovy()
-  compile 'com.github.jacobono:gradle-xsd-wsdl-slurping:1.1.2'
-  compile 'com.google.inject:guice:3.0'
-  testCompile "org.spockframework:spock-core:0.7-groovy-1.8"
-  testCompile 'cglib:cglib-nodep:2.2'
-  testCompile 'org.objenesis:objenesis:1.2'
+  implementation gradleApi()
+  implementation localGroovy()
+  implementation 'at.comm_unity.com.github.jacobono:gradle-xsd-wsdl-slurping:1.1.2'
+  implementation 'com.google.inject:guice:3.0'
+  
+  testImplementation "org.spockframework:spock-core:0.7-groovy-1.8"
+  testImplementation 'cglib:cglib-nodep:2.2'
+  testImplementation 'org.objenesis:objenesis:1.2'
 }
 
 groovydoc {
@@ -36,16 +70,11 @@ groovydoc {
 }
 
 task groovyDocJar(type: Jar, dependsOn: groovydoc) {
-  classifier = 'groovydoc'
+  archiveClassifier = 'groovydoc'
   from groovydoc.destinationDir
 }
 
-task groovySourceJar(type: Jar, dependsOn: 'jar') {
-  classifier = 'sources'
-  from sourceSets.main.allSource
-}
-
-task('unversionedJar', type: Jar, dependsOn: 'jar') {
+/*task('unversionedJar', type: Jar, dependsOn: 'jar') {
   version = null
   from sourceSets.main.output
 }
@@ -68,7 +97,7 @@ task('uninstallPlugin', type: Delete) {
   group = 'installation'
   description = 'Removes the plugin from your gradle distribution.'
   delete("/${gradleInstallDir}/lib/plugins/${unversionedJar.archiveName}")
-}
+}*/
 
 test {
     testLogging {
@@ -80,6 +109,41 @@ artifacts {
   archives jar, groovyDocJar
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = "1.11"
+// cuRepository* definiert in $HOME/.gradle/gradle.properties
+def repositoryUsernamePropName = 'cuRepositoryUser'
+def repositoryPasswordPropName = 'cuRepositoryPassword'
+
+publishing {
+	repositories {
+		maven {
+			url "https://repo.comm-unity.at/nexus/content/repositories/${project.version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'}"
+
+			credentials {
+				username project.hasProperty(repositoryUsernamePropName) ? project.getProperty(repositoryUsernamePropName) : ''
+				password project.hasProperty(repositoryPasswordPropName) ? project.getProperty(repositoryPasswordPropName) : ''
+			}
+		}
+	}
+
+  publications {
+    plugin(MavenPublication) {
+      from components.java
+      
+      artifact groovyDocJar
+    }
+  }
+}
+
+task integTest(type: Test, dependsOn: 'test') {
+  testClassesDirs = sourceSets.integTest.output.classesDirs
+  classpath = sourceSets.integTest.runtimeClasspath
+  testLogging {
+    events "passed", "skipped", "failed"
+  }
+}
+
+check.dependsOn(integTest)
+
+wrapper {
+    gradleVersion = '8.6'
 }
