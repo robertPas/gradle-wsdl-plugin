@@ -35,6 +35,15 @@ repositories {
 	}
 }
 
+gradlePlugin {
+	plugins {
+		wsdlPlugin {
+			id = "at.comm_unity.com.github.jacobono.wsdl"
+			implementationClass = "org.gradle.jacobo.plugins.WsdlPlugin"
+		}
+	}
+}
+
 /*sourceSets {
   integTest {
      compileClasspath += main.output + test.output
@@ -128,7 +137,8 @@ test {
 }
 
 artifacts {
-  archives jar, groovyDocJar
+	// to also generate the groovyDocJar at assemble
+	archives jar, groovyDocJar
 }
 
 // cuRepository* definiert in $HOME/.gradle/gradle.properties
@@ -147,13 +157,11 @@ publishing {
 		}
 	}
 
-  publications {
-    plugin(MavenPublication) {
-      from components.java
-      
-      artifact groovyDocJar
-    }
-  }
+	publications {
+		pluginMaven(MavenPublication) {
+			artifact groovyDocJar
+		}
+	}
 }
 
 /*task integTest(type: Test, dependsOn: 'test') {
