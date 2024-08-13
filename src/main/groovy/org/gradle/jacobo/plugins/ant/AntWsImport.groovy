@@ -1,7 +1,11 @@
 package org.gradle.jacobo.plugins.ant
+
+import groovy.ant.AntBuilder
+
 import org.gradle.api.file.FileCollection
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
+
 /**
  * Defines and executes the {@code wsimport} ant task.
  */

@@ -1,6 +1,6 @@
 package org.gradle.jacobo.plugins.task
 
-import groovy.util.AntBuilder
+import groovy.ant.AntBuilder
 
 import org.gradle.api.file.FileCollection
 
