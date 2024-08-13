@@ -25,7 +25,9 @@ import org.gradle.api.tasks.bundling.War
  */
 class WsdlWar extends War {
 
-  static final Logger log = Logging.getLogger(War.class)
+  static final Logger log = Logging.getLogger(WsdlWar.class)
+
+  public static final String TASK_NAME = 'wsdlWar'
 
   /**
    * Absolute path WSDL dependencies that are copied into the WAR archive

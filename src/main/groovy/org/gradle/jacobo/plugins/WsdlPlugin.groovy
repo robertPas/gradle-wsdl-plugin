@@ -16,6 +16,7 @@ import org.gradle.jacobo.plugins.task.WsdlWsImport
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.UnknownTaskException
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.WarPlugin
 import org.gradle.api.tasks.bundling.War
@@ -34,7 +35,7 @@ class WsdlPlugin implements Plugin<Project> {
 
    void apply (Project project) {
      project.plugins.apply(JavaPlugin)
-     project.plugins.apply(WarPlugin)
+//     project.plugins.apply(WarPlugin)
      Injector injector = Guice.createInjector([new WsdlPluginModule(), new DocSlurperModule()])
      configureWsdlExtension(project)
      configureWsdlConfiguration(project)
@@ -119,13 +120,18 @@ class WsdlPlugin implements Plugin<Project> {
    }
 
    private void configureWarTask(final Project project, final Task resolverTask) {
-     Task oldWar = project.tasks.getByName('war')
-     Task wsdlWar = project.tasks.replace(WarPlugin.WAR_TASK_NAME, WsdlWar)
-     wsdlWar.group = oldWar.group
-     wsdlWar.description = oldWar.description + " Also bundles the xsd and wsdl files this service depends on"
-     wsdlWar.dependsOn(resolverTask)
-     wsdlWar.conventionMapping.wsdlDependencies  = { project.wsdl.wsdlDependencies }
-     wsdlWar.conventionMapping.wsdlFolder = { project.file(new File(project.rootDir, project.wsdl.wsdlFolder)) }
-     wsdlWar.conventionMapping.schemaFolder = { project.file(new File(project.rootDir, project.wsdl.schemaFolder)) }
+     try {
+	     Task oldWar = project.tasks.getByName('war')
+	     Task wsdlWar = project.tasks.create(WsdlWar.TASK_NAME, WsdlWar)
+	     wsdlWar.group = oldWar.group
+	     wsdlWar.description = oldWar.description + " Also bundles the xsd and wsdl files this service depends on"
+	     wsdlWar.dependsOn(resolverTask)
+	     wsdlWar.conventionMapping.wsdlDependencies  = { project.wsdl.wsdlDependencies }
+	     wsdlWar.conventionMapping.wsdlFolder = { project.file(new File(project.rootDir, project.wsdl.wsdlFolder)) }
+	     wsdlWar.conventionMapping.schemaFolder = { project.file(new File(project.rootDir, project.wsdl.schemaFolder)) }
+     }
+     catch (UnknownTaskException ex) {
+     	// war-Task not in project
+     }
    }
 }
