@@ -47,10 +47,10 @@ gradlePlugin {
 }
 
 sourceSets {
-  integTest {
-    compileClasspath += main.output + test.output
-    runtimeClasspath += main.output + test.output
-  }
+	integTest {
+		compileClasspath += main.output + test.output
+		runtimeClasspath += main.output + test.output
+	}
 }
 
 configurations {
@@ -59,42 +59,34 @@ configurations {
 }
 
 dependencies {
-	//https://github.com/croz-ltd/klokwrk-project/blob/master/support/documentation/article/debugging-gradle-from-idea/debugging-gradle-from-idea.md
-	runtimeOnly(gradleApi())
-
-//  implementation gradleApi()
-  implementation localGroovy()
-  implementation 'at.comm_unity.com.github.jacobono:gradle-xsd-wsdl-slurping:1.1.2.1'
-  implementation 'com.google.inject:guice:3.0'
+	implementation localGroovy()
+	implementation 'at.comm_unity.com.github.jacobono:gradle-xsd-wsdl-slurping:1.1.2.1'
+	implementation 'com.google.inject:guice:3.0'
   
 	testImplementation platform("org.spockframework:spock-bom:2.3-groovy-3.0")
 	testImplementation ("org.spockframework:spock-core") {
 		exclude group: "org.codehaus.groovy", module: "groovy"
 	}
-/*	testImplementation ("org.spockframework:spock-junit4") {
-		exclude group: "org.codehaus.groovy", module: "groovy"
-	}
-	testImplementation "junit:junit:4.13.1"*/
 	testImplementation ("org.spockframework:spock-guice") {
 		exclude group: "org.codehaus.groovy", module: "groovy"
 	}
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-  testImplementation 'cglib:cglib-nodep:2.2'
-  testImplementation 'org.objenesis:objenesis:1.2'
+	testImplementation 'cglib:cglib-nodep:2.2'
+	testImplementation 'org.objenesis:objenesis:1.2'
 }
 
 groovydoc {
-  docTitle = "Gradle WSDL Plugin"
-  link("http://groovy.codehaus.org/gapi/", "groovy.", "org.codehaus.groovy.")
-  link("https://docs.oracle.com/javase/8/docs/api/", "java.")
-  link("http://google-guice.googlecode.com/svn/trunk/javadoc/", "com.google.")
-  link("https://docs.gradle.org/current/javadoc/", "org.gradle.", "org.gradle.api")
+	docTitle = "Gradle WSDL Plugin"
+	link("http://groovy.codehaus.org/gapi/", "groovy.", "org.codehaus.groovy.")
+	link("https://docs.oracle.com/javase/8/docs/api/", "java.")
+	link("http://google-guice.googlecode.com/svn/trunk/javadoc/", "com.google.")
+	link("https://docs.gradle.org/current/javadoc/", "org.gradle.", "org.gradle.api")
 }
 
 task groovyDocJar(type: Jar, dependsOn: groovydoc) {
-  archiveClassifier = 'groovydoc'
-  from groovydoc.destinationDir
+	archiveClassifier = 'groovydoc'
+	from groovydoc.destinationDir
 }
 
 artifacts {
@@ -102,18 +94,14 @@ artifacts {
 	archives jar, groovyDocJar
 }
 
-publishing {
-	publications {
-		pluginMaven(MavenPublication) {
-			artifact groovyDocJar
-		}
-	}
+task integTest(type: Test, dependsOn: 'test') {
+	testClassesDirs = sourceSets.integTest.output.classesDirs
+	classpath = sourceSets.integTest.runtimeClasspath
+	reports.html.outputLocation = java.testReportDir.dir("integTests")
 }
 
-task integTest(type: Test, dependsOn: 'test') {
-  testClassesDirs = sourceSets.integTest.output.classesDirs
-  classpath = sourceSets.integTest.runtimeClasspath
-  reports.html.outputLocation = java.testReportDir.dir("integTests")
+tasks.named('check') {
+	dependsOn(integTest)
 }
 
 tasks.withType(Test).configureEach {
@@ -123,8 +111,12 @@ tasks.withType(Test).configureEach {
     }
 }
 
-tasks.named('check') {
-	dependsOn(integTest)
+publishing {
+	publications {
+		pluginMaven(MavenPublication) {
+			artifact groovyDocJar
+		}
+	}
 }
 
 wrapper {
