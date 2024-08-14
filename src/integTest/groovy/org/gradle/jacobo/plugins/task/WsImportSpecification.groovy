@@ -9,10 +9,11 @@ import org.gradle.jacobo.plugins.ProjectIntegrationSpec
 
 class WsImportSpecification extends ProjectIntegrationSpec {
 
+  File rootDir
   def wsimport = Mock(AntWsImport)
 
   def setup() {
-    def rootDir = getFileFromResourcePath("/test-wsdl-project")
+    rootDir = getFileFromResourcePath("/test-wsdl-project")
     setRootProject(rootDir)
     setSubProject(rootProject, "integration-test-ws", "com.github.jacobono.wsdl")
     setupProjectTasks()
@@ -21,6 +22,8 @@ class WsImportSpecification extends ProjectIntegrationSpec {
   @Unroll
   def "run task wsimport for project '#projectName'"() {
     given: "setup sub project and tasks"
+    def subRootDir = new File(rootDir, projectName)
+    subRootDir.mkdir() 
     wsImportTask.antExecutor = wsimport
 
     // simulate what gradle would do here, dependent Tasks need to run first    
@@ -32,6 +35,8 @@ class WsImportSpecification extends ProjectIntegrationSpec {
 
     then: "ant executor should only be called once"
     1 * wsimport.execute(*_)
-    
+
+    where:
+    projectName = "integration-test-ws"
   }
 }
