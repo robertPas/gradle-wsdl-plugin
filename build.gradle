@@ -62,10 +62,10 @@ dependencies {
 
 //  implementation gradleApi()
   implementation localGroovy()
-  implementation 'at.comm_unity.com.github.jacobono:gradle-xsd-wsdl-slurping:1.1.2.1-SNAPSHOT'
+  implementation 'at.comm_unity.com.github.jacobono:gradle-xsd-wsdl-slurping:1.1.2.1'
   implementation 'com.google.inject:guice:3.0'
   
-	testImplementation platform("org.spockframework:spock-bom:2.0-M4-groovy-3.0")
+	testImplementation platform("org.spockframework:spock-bom:2.3-groovy-3.0")
 	testImplementation ("org.spockframework:spock-core") {
 		exclude group: "org.codehaus.groovy", module: "groovy"
 	}
