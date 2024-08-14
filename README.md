@@ -1,11 +1,7 @@
 gradle-wsdl-plugin
 ==================
 
-[![Build Status](https://drone.io/github.com/djmijares/gradle-wsdl-plugin/status.png)]
-(https://drone.io/github.com/djmijares/gradle-wsdl-plugin/latest)
-
-[ ![Download](https://api.bintray.com/packages/djmijares/gradle-plugins/gradle-wsdl-plugin/images/download.png)
-](https://bintray.com/djmijares/gradle-plugins/gradle-wsdl-plugin/_latestVersion)
+Fork of [https://github.com/scubacabra/gradle-wsdl-plugin](https://github.com/scubacabra/gradle-wsdl-plugin), which was adapted to work with Gradle 8.
 
 :boom: :collision:
 
@@ -31,33 +27,22 @@ Eases the manual configuration of web service project by:
 
 Using The Plugin
 ================
-:boom: :collision:
-
-Now in the [gradle plugins repo](http://plugins.gradle.org/) :exclamation:
-
-:boom: :collision:
-
-## Using Gradle 2.1 plugins script block
-```groovy
-plugins {
-    id 'com.github.jacobono.wsdl' version '1.7.8'
-}
-```
-
-## Using Straight-Up JCenter
 ```groovy
 buildscript {
-  repositories { 
-    jcenter()
-    mavenCentral()
-  }
+	repositories { 
+		maven {
+			url "https://repo.comm-unity.at/nexus/content/groups/public"
+			content { includeGroupByRegex "at\\.comm_unity.*" }
+		}
+		mavenCentral()
+	}
 
-  dependencies {
-    classpath 'com.github.jacobono:gradle-wsdl-plugin:1.7.8'
-  }
+	dependencies {
+		classpath 'at.comm_unity.com.github.jacobono:gradle-wsdl-plugin:1.7.8.1'
+	}
 }
 
-apply plugin: 'com.github.jacobono.wsdl'
+apply plugin: 'at.comm_unity.com.github.jacobono.wsdl'
 ```
 
 Setting Up The jaxws Configurations
