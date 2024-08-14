@@ -1,20 +1,22 @@
 buildscript{ 
-  repositories {
-    mavenCentral()
-  }
-  dependencies {
-//    classpath "net.saliman:gradle-cobertura-plugin:1.1.2"
-//    classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.6'
-  }
+	repositories {
+		mavenCentral()
+		maven {
+			url "https://repo.comm-unity.at/nexus/content/groups/public"
+			content { includeGroupByRegex "at\\.comm_unity.*" }
+		}
+	}
+	dependencies {
+		classpath 'at.comm_unity.gradle:publishing-plugin:1.1.0'
+	}
 }
 
 plugins {
 	id 'eclipse'
 	id 'groovy'
 	id 'groovy-gradle-plugin'
-	id 'maven-publish'
 }
-//apply plugin: 'at.comm_unity.maven-publish-conventions'
+apply plugin: 'at.comm_unity.maven-publish-conventions'
 
 println "Running Gradle ${gradle.gradleVersion} for ${project.name} with Java " + System.getProperty("java.version") + " (" + System.getProperty("java.home") + ")" 
 
@@ -100,22 +102,7 @@ artifacts {
 	archives jar, groovyDocJar
 }
 
-// cuRepository* definiert in $HOME/.gradle/gradle.properties
-def repositoryUsernamePropName = 'cuRepositoryUser'
-def repositoryPasswordPropName = 'cuRepositoryPassword'
-
 publishing {
-	repositories {
-		maven {
-			url "https://repo.comm-unity.at/nexus/content/repositories/${project.version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'}"
-
-			credentials {
-				username project.hasProperty(repositoryUsernamePropName) ? project.getProperty(repositoryUsernamePropName) : ''
-				password project.hasProperty(repositoryPasswordPropName) ? project.getProperty(repositoryPasswordPropName) : ''
-			}
-		}
-	}
-
 	publications {
 		pluginMaven(MavenPublication) {
 			artifact groovyDocJar
