@@ -63,7 +63,7 @@ class ProjectToWsdlFileConverter implements NameToFileConverter {
     def wsdlName = convert(projectName, nameRules)
     def wsdlFile = new File(wsdlDirectory, "${wsdlName}.wsdl")
     if (wsdlFile.exists()) return wsdlFile
-    def exceptionMessage = ["File ${wsdlName}.wsdl does not exist at at default ",
+    def exceptionMessage = ["File ${wsdlName}.wsdl does not exist at the default ",
 			    "location of '$wsdlDirectory'"]
     throw new GradleException(exceptionMessage.sum())
   }
