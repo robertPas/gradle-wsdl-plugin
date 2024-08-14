@@ -76,6 +76,7 @@ dependencies {
 	testImplementation ("org.spockframework:spock-guice") {
 		exclude group: "org.codehaus.groovy", module: "groovy"
 	}
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
   testImplementation 'cglib:cglib-nodep:2.2'
   testImplementation 'org.objenesis:objenesis:1.2'
@@ -140,5 +141,5 @@ tasks.named('check') {
 }
 
 wrapper {
-    gradleVersion = '8.6'
+    gradleVersion = '8.9'
 }
