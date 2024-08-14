@@ -21,12 +21,14 @@ class ConvertProjectToWsdlFileSpecification extends ProjectIntegrationSpec {
     setupProjectTasks()
 
     when: "convert task is executed"
-    convertTask.execute()
+    convertTask.start()
 
     then:
-    TaskExecutionException e = thrown()
-    e.cause instanceof GradleException
-    e.cause.message.contains(exceptionContains)
+//    TaskExecutionException e = thrown()
+//    e.cause instanceof GradleException
+//    e.cause.message.contains(exceptionContains)
+    GradleException e = thrown()
+    e.message.contains(exceptionContains)
 
     where:
     projectName << ["bad-project-name", "no-associated-wsdl-ws"]
@@ -42,7 +44,7 @@ project based on convention'''() {
     setupProjectTasks()
 
     when: "convert task is executed"
-    convertTask.execute()
+    convertTask.start()
 
     then:
     project.wsdl.wsdlFile == getFileFromResourcePath("/test-wsdl-project/wsdl/IntegrationTestService.wsdl")

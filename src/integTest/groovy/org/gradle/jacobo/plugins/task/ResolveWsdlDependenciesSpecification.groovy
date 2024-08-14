@@ -19,10 +19,10 @@ class ResolveWsdlDependenciesSpecification extends ProjectIntegrationSpec {
 
     // simulate what gradle would do here, dependent Tasks need to run first    
     and: "dependent task is executed"
-    convertTask.execute()
+    convertTask.start()
 
     when: "resolve task is executed"
-    resolveTask.execute()
+    resolveTask.start()
 
     then: "these are the wsdl dependencies"
     project.wsdl.wsdlDependencies.files == project.files(

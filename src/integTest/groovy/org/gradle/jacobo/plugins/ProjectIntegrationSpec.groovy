@@ -14,7 +14,7 @@ class ProjectIntegrationSpec extends ProjectTaskSpecification {
   // Task names
   def convertTaskName = WsdlPlugin.CONVERSION_TASK_NAME
   def resolveTaskName = WsdlPlugin.RESOLVE_DEPENDENCIES_TASK_NAME
-  def warTaskName     = WarPlugin.WAR_TASK_NAME
+  def warTaskName     = WsdlWar.TASK_NAME
   def wsImportTaskName = WsdlPlugin.WSIMPORT_TASK_NAME
 
   // tasks
@@ -30,15 +30,15 @@ class ProjectIntegrationSpec extends ProjectTaskSpecification {
     rootProject = ProjectBuilder.builder().withProjectDir(rootDir).build()
   }
   
-  def setSubProject(def rootProject, def projectName, def plugin) {
+  def setSubProject(def rootProject, def projectName, String... plugins) {
     project = ProjectBuilder.builder().withName(projectName).withParent(rootProject).build()
-    project.apply(plugin: plugin)
+    plugins.each { project.apply(plugin: it) }
   }
 
   def setupProjectTasks() {
     convertTask = project.tasks[convertTaskName] as ConvertProjNameToWsdl
     resolveTask = project.tasks[resolveTaskName] as WsdlResolveDependencies
-    warTask     = project.tasks[warTaskName] as WsdlWar
+//    warTask     = project.tasks[warTaskName] as WsdlWar
     wsImportTask = project.tasks[wsImportTaskName] as WsdlWsImport
   }
 }

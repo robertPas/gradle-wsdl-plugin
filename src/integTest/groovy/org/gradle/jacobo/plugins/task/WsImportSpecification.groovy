@@ -25,12 +25,12 @@ class WsImportSpecification extends ProjectIntegrationSpec {
 
     // simulate what gradle would do here, dependent Tasks need to run first    
     and: "dependent tasks are executed"
-    [convertTask, resolveTask].each { it.execute() }
+    [convertTask, resolveTask].each { it.start() }
 
     when: "ws import is executed"
-    wsImportTask.execute()
+    wsImportTask.start()
 
-    then: "ant exeutor should only be called once"
+    then: "ant executor should only be called once"
     1 * wsimport.execute(*_)
     
   }
