@@ -10,9 +10,9 @@ buildscript{
 
 plugins {
 	id 'eclipse'
+	id 'groovy'
 	id 'groovy-gradle-plugin'
 	id 'maven-publish'
-	id 'groovy'
 }
 //apply plugin: 'at.comm_unity.maven-publish-conventions'
 
@@ -84,9 +84,9 @@ dependencies {
 groovydoc {
   docTitle = "Gradle WSDL Plugin"
   link("http://groovy.codehaus.org/gapi/", "groovy.", "org.codehaus.groovy.")
-  link("http://docs.oracle.com/javase/7/docs/api/", "java.")
+  link("https://docs.oracle.com/javase/8/docs/api/", "java.")
   link("http://google-guice.googlecode.com/svn/trunk/javadoc/", "com.google.")
-  link("http://www.gradle.org/docs/current/javadoc/", "org.gradle.", "org.gradle.api")
+  link("https://docs.gradle.org/current/javadoc/", "org.gradle.", "org.gradle.api")
 }
 
 task groovyDocJar(type: Jar, dependsOn: groovydoc) {
